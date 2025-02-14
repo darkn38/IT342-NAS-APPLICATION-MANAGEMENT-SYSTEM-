@@ -20,7 +20,7 @@ The Non-Academic Scholar Application Management System (NASAMS) is a digital pla
 - Reports: The system generates reports on student data and scholarship trends.
 
 ## 📋 Links
-- [Figma](#) *(ibutang link pre)*
+- [Figma](#) https://www.figma.com/design/gJT1wCdAsUD07TcaDODMAb/SIMS-UI%2FUX-(NASAMS)?node-id=0-1&t=TdnJBAHZTBrXmd8b-1
 - [Diagrams](#) *(ibutang link sad ani pre)*
 
 ### 🛠 Built With
