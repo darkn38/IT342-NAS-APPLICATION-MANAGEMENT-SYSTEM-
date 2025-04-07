@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">NASMS</string>
+
+    <string name="login_title">Applicant Login</string>
+    <string name="hint_username">Username or Email</string>
+    <string name="hint_password">Password</string>
+    <string name="button_login">Login</string>
+    <string name="prompt_create_account">Don\'t have an account? Create one</string>
+
+    <string name="register_title">Create Applicant Account</string>
+    <string name="hint_email">Email Address</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="button_register">Register</string>
+    <string name="prompt_login">Already have an account? Login</string>
+    <string name="welcome_message">Welcome to NASMS</string>
+    <string name="button_go_to_login">Login</string>
+    <string name="button_go_to_register">Create Account</string>
+
+
+    <string name="profile_title">My Profile</string>
+    <string name="label_name">Name:</string>
+    <string name="label_email">Email:</string>
+    <string name="label_student_id">Student ID:</string>
+    <string name="scholarships_title">Available Scholarships</string>
+    <string name="button_apply_now">Apply Now</string>
+
+    <string name="form_title">Scholarship Application Form</string>
+    <string name="button_submit_application">Submit Application</string>
+    <string name="button_generate_pdf">Save as PDF</string>
+    <string name="upload_title">Upload Documents</string>
+    <string name="button_select_school_id">Select School ID</string>
+    <string name="button_select_grades">Select Grades (Last Sem)</string>
+    <string name="button_upload">Upload Selected Documents</string>
+    <string name="text_school_id_selected">School ID: %s</string>
+    <string name="text_grades_selected">Grades: %s</string>
+    <string name="no_file_selected">No file selected</string>
+
+    <string name="loading">Loading...</string>
+    <string name="error_generic">An error occurred. Please try again.</string>
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_required_field">This field is required.</string>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sanguine_brown">#8C363C</color>
+    <color name="buff">#F1D88A</color>
+    <color name="acadia">#170F04</color>
+    <color name="thatch">#B8949C</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">@color/sanguine_brown</color>
+    <color name="colorPrimaryVariant">@color/acadia</color> <color name="colorOnPrimary">@color/white</color>
+    <color name="colorSecondary">@color/buff</color>
+    <color name="colorSecondaryVariant">@color/thatch</color> <color name="colorOnSecondary">@color/black</color>
+    <color name="colorSurface">@color/white</color>
+    <color name="colorOnSurface">@color/black</color>
+    <color name="colorBackground">@color/white</color> <color name="colorOnBackground">@color/black</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorOnError">@color/white</color>
+
+    <color name="status_pending">#FFA500</color> <color name="status_approved">#4CAF50</color> <color name="status_rejected">@color/sanguine_brown</color> </resources>
