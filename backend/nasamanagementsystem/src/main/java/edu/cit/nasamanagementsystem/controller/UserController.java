@@ -5,6 +5,10 @@ import edu.cit.nasamanagementsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import edu.cit.nasamanagementsystem.dto.SignUpRequest;
+import edu.cit.nasamanagementsystem.service.AuthService;
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -17,14 +21,29 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AuthService authService; // ✅ Add this!
+
     // CREATE USER
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody User user) {
         if ("ADMIN".equalsIgnoreCase(user.getRole())) {
             return ResponseEntity.badRequest().body("Cannot create admin via this endpoint.");
         }
-        userRepository.save(user);
-        return ResponseEntity.ok("User created successfully.");
+
+        // ✅ Use your service to ensure password is encoded!
+        SignUpRequest request = new SignUpRequest();
+        request.setEmail(user.getEmail());
+        request.setPassword(user.getPassword());
+        request.setRole(user.getRole());
+
+        String result = authService.signup(request);
+
+        if (result.contains("already exists")) {
+            return ResponseEntity.badRequest().body(result);
+        }
+
+        return ResponseEntity.ok(result);
     }
 
     // READ ALL USERS (exclude admins)
