@@ -1,25 +1,49 @@
 // pages/ApplicantDetailsPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ApplicantDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    firstName: 'Jane',
-    lastName: 'Doe',
-    department: 'Computer Studies',
-    yearLevel: '3',
-    idNumber: '18-0340-101',
-    email: 'jane.doe@example.com',
-    address: 'Cebu City'
+    firstName: '',
+    lastName: '',
+    department: '',
+    yearLevel: '',
+    idNumber: '',
+    email: '',
+    address: ''
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Fetch applicant details from the backend using the id
+  useEffect(() => {
+    const fetchApplicant = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken'); // Get JWT token from localStorage
+        const response = await axios.get(`http://localhost:8080/api/admin/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}` // Send token for authentication
+          }
+        });
+        setForm(response.data); // Populate form with applicant data
+        setLoading(false);
+      } catch (error) {
+        setError(error.message || 'Failed to load applicant');
+        setLoading(false);
+      }
+    };
+
+    fetchApplicant(); // Fetch applicant details on component mount
+  }, [id]);
 
   const handleClose = () => {
-    navigate('/applicants');
+    navigate('/applicants'); // Navigate back to the applicants list
   };
 
   const handleChange = (e) => {
@@ -27,9 +51,19 @@ const ApplicantDetailsPage = () => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert('Changes saved successfully!');
+  const handleSave = async () => {
+    try {
+      setIsEditing(false);
+      const token = localStorage.getItem('jwtToken');
+      await axios.put(`http://localhost:8080/api/admin/users/${id}`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      alert('Changes saved successfully!');
+    } catch (error) {
+      setError(error.message || 'Failed to save changes');
+    }
   };
 
   return (
@@ -43,33 +77,44 @@ const ApplicantDetailsPage = () => {
           <button style={styles.closeBtn} onClick={handleClose}>✕</button>
         </div>
 
-        <div style={styles.formGrid}>
-          {Object.entries(form).map(([key, value]) => (
-            <div
-              key={key}
-              style={{ ...styles.formGroup, ...(key === 'address' && { gridColumn: 'span 2' }) }}
-            >
-              <label style={styles.label}>{formatLabel(key)}</label>
-              <input
-                name={key}
-                value={value}
-                onChange={handleChange}
-                readOnly={!isEditing}
-                style={styles.input}
-              />
+        {loading ? (
+          <p>Loading applicant details...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>{error}</p>
+        ) : (
+          <div>
+            <div style={styles.formGrid}>
+              {Object.entries(form).map(([key, value]) => (
+                // Exclude the Id and Password fields from being rendered
+                key !== 'idNumber' && key !== 'password' && (
+                  <div
+                    key={key}
+                    style={{ ...styles.formGroup, ...(key === 'address' && { gridColumn: 'span 2' }) }}
+                  >
+                    <label style={styles.label}>{formatLabel(key)}</label>
+                    <input
+                      name={key}
+                      value={value}
+                      onChange={handleChange}
+                      readOnly={!isEditing}
+                      style={styles.input}
+                    />
+                  </div>
+                )
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div style={styles.docSection}>
-          <h3 style={styles.subheading}>Uploaded Document</h3>
-          <div style={styles.docBox}>PDF or Image Placeholder</div>
-        </div>
+            <div style={styles.docSection}>
+              <h3 style={styles.subheading}>Uploaded Document</h3>
+              <div style={styles.docBox}>PDF or Image Placeholder</div>
+            </div>
 
-        <div style={styles.actions}>
-          <button style={styles.saveBtn} onClick={handleSave} disabled={!isEditing}>SAVE</button>
-          <button style={styles.editBtn} onClick={() => setIsEditing(true)}>EDIT</button>
-        </div>
+            <div style={styles.actions}>
+              <button style={styles.saveBtn} onClick={handleSave} disabled={!isEditing}>SAVE</button>
+              <button style={styles.editBtn} onClick={() => setIsEditing(true)}>EDIT</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

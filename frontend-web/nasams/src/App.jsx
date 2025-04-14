@@ -1,4 +1,6 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 // Admin Pages
 import LandingPage from './pages/Admin/LandingPage';
@@ -9,32 +11,33 @@ import ApplicantDetailsPage from './pages/Admin/ApplicantDetailsPage';
 import ListOfApplicantsPage from './pages/Admin/ListOfApplicantsPage';
 import AddApplicantPage from './pages/Admin/AddApplicantPage';
 
-// Applicant Pages
-import ApplicantLandingPage from './pages/Applicant/ApplicantLandingPage';
-import ApplicantLoginPage from './pages/Applicant/ApplicantLoginPage';
-import ApplicantDashboard from './pages/Applicant/ApplicantDashboard';
-import ApplicantProfile from './pages/Applicant/ApplicantProfile';
-import UploadDocuments from './pages/Applicant/UploadDocuments';
-
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
-        {/* Admin Routes */}
+        {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/welcome" element={<WelcomePage />} />
-        <Route path="/applicants" element={<ApplicantProfilePage />} />
-        <Route path="/applicants/:id" element={<ApplicantDetailsPage />} />
-        <Route path="/list" element={<ListOfApplicantsPage />} />
-        <Route path="/add" element={<AddApplicantPage />} />
 
-        {/* Applicant Routes */}
-        <Route path="/applicant" element={<ApplicantLandingPage />} />
-        <Route path="/applicant/login" element={<ApplicantLoginPage />} />
-        <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />
-        <Route path="/applicant/profile" element={<ApplicantProfile />} />
-        <Route path="/applicant/upload" element={<UploadDocuments />} />
+        {/* Protected Routes */}
+        {isAuthenticated && (
+          <>
+            <Route path="/welcome" element={<WelcomePage />} />
+            <Route path="/applicants" element={<ApplicantProfilePage />} />
+            <Route path="/applicants/:id" element={<ApplicantDetailsPage />} />
+            <Route path="/list" element={<ListOfApplicantsPage />} />
+            <Route path="/add" element={<AddApplicantPage />} />
+          </>
+        )}
       </Routes>
     </Router>
   );

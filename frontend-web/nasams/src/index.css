@@ -1,3 +1,4 @@
+/* src/index.css */
 :root {
   --sanguine-brown: #8C363C;
   --buff: #F1D88A;
@@ -6,21 +7,10 @@
 }
 
 body {
-  margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--buff);
-  color: var(--acadia);
 }
 
-button {
-  background-color: var(--sanguine-brown);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: var(--thatch);
+a {
+  text-decoration: none;
 }

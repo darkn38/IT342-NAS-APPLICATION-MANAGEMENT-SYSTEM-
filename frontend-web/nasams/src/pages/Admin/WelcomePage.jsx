@@ -6,8 +6,12 @@ const WelcomePage = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate('/');
+    localStorage.removeItem('jwtToken');
+    navigate('/login');
   };
+  
+
+  
 
   return (
     <div>

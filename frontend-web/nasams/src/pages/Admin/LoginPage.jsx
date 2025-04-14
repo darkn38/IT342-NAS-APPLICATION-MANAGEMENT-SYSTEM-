@@ -1,6 +1,7 @@
-// pages/LoginPage.jsx
+// pages/Admin/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginAdmin } from '../../services/authService'; // import the service
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -8,11 +9,24 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (username === 'admin' && password === 'admin') {
+  const handleLogin = async () => {
+    try {
+      const credentials = {
+        email: username,
+        password: password
+      };
+
+      const response = await loginAdmin(credentials);
+      console.log(response); // Optional debug
+
+      // Save the token in localStorage
+      localStorage.setItem('jwtToken', response.token);
+
+      // Redirect to welcome page
       navigate('/welcome');
-    } else {
-      setError('Invalid username or password.');
+    } catch (error) {
+      console.error('Login failed:', error);
+      setError(error.message || 'Invalid email or password.');
     }
   };
 
@@ -22,7 +36,7 @@ const LoginPage = () => {
         <h2 style={styles.header}>NASAMS</h2>
         {error && <p style={styles.error}>{error}</p>}
         <div style={styles.inputGroup}>
-          <label style={styles.label}>Username</label>
+          <label style={styles.label}>Username (Email)</label>
           <input
             style={styles.input}
             type="text"
