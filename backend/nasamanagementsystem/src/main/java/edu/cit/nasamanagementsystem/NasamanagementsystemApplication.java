@@ -10,3 +10,4 @@ public class NasamanagementsystemApplication {
 		SpringApplication.run(NasamanagementsystemApplication.class, args);
 	}
 }
+	

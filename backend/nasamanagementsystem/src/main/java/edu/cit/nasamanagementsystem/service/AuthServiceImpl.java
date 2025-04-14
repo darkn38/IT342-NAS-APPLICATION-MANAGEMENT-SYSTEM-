@@ -3,6 +3,7 @@ package edu.cit.nasamanagementsystem.service;
 import edu.cit.nasamanagementsystem.dto.LoginRequest;
 import edu.cit.nasamanagementsystem.dto.SignUpRequest;
 import edu.cit.nasamanagementsystem.entity.User;
+import edu.cit.nasamanagementsystem.enums.ApplicationStatus;
 import edu.cit.nasamanagementsystem.repository.UserRepository;
 import edu.cit.nasamanagementsystem.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,21 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword())); // ✅ Encrypt password
         user.setRole(request.getRole());
+
+        // ✅ Map additional applicant details
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDepartment(request.getDepartment());
+        user.setYearLevel(request.getYearLevel());
+        user.setIdNumber(request.getIdNumber());
+        user.setAddress(request.getAddress());
+        user.setDocumentPath(request.getDocumentPath()); // For now, just text
+
+        // ✅ Important: Set default status to PENDING
+        user.setStatus(ApplicationStatus.PENDING);
+
+        // ✅ Optional: Initialize remarks to empty (clean)
+        user.setRemarks(null);
 
         userRepository.save(user);
         return "User registered successfully.";

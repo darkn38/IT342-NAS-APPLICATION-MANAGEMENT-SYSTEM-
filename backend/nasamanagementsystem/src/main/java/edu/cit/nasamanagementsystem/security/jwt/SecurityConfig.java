@@ -46,7 +46,12 @@ public class SecurityConfig {
 
                         // ✅ Protected endpoints (JWT required)
                         .requestMatchers("/api/scholarships/**").authenticated()
-                        .requestMatchers("/api/admin/**").authenticated()
+                        // Explicit admin protection (optional clarity)
+                        .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/admin/**").hasAuthority("ADMIN")
 
                         // ✅ Future: add more protected APIs here
 
