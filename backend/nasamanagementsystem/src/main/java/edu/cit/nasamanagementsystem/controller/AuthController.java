@@ -18,7 +18,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    // ✅ Login endpoint using Service layer
+    // ✅ Login endpoint
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginRequest request) {
         Map<String, String> response = authService.login(request);
@@ -30,9 +30,16 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ Register endpoint (optional — since your service already supports this)
+    // ✅ Register endpoint (now secured with ADMIN creation restriction)
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody SignUpRequest request) {
+
+        // ✅ Security: Prevent public creation of ADMIN accounts
+        if ("ADMIN".equalsIgnoreCase(request.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Admin account creation is not allowed via public API.");
+        }
+
         String result = authService.signup(request);
 
         if ("Email already exists!".equals(result)) {
