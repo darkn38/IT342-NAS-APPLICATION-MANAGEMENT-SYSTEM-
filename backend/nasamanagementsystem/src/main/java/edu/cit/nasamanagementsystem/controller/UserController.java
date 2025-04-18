@@ -1,5 +1,6 @@
 package edu.cit.nasamanagementsystem.controller;
 
+import edu.cit.nasamanagementsystem.dto.DashboardStatsDTO;
 import edu.cit.nasamanagementsystem.entity.User;
 import edu.cit.nasamanagementsystem.enums.ApplicationStatus;
 import edu.cit.nasamanagementsystem.repository.UserRepository;
@@ -140,4 +141,16 @@ public class UserController {
         }
         return ResponseEntity.status(404).body("User not found.");
     }
+
+    @GetMapping("/dashboard-stats")
+    public ResponseEntity<DashboardStatsDTO> getDashboardStats() {
+        DashboardStatsDTO stats = new DashboardStatsDTO();
+        stats.setTotal(userRepository.countAllApplicants());
+        stats.setApproved(userRepository.countApproved());
+        stats.setPending(userRepository.countPending());
+        stats.setRejected(userRepository.countRejected());
+
+        return ResponseEntity.ok(stats);
+    }
+
 }
