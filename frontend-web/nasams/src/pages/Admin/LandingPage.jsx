@@ -1,51 +1,78 @@
-// pages/LandingPage.jsx
+// src/pages/LandingPage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+
   return (
-    <div style={styles.container}>
+    <div style={styles.page}>
       <div style={styles.card}>
         <img src="/school-logo.png" alt="CIT-U Logo" style={styles.logo} />
-        <h2 style={styles.title}>CEBU INSTITUTE OF TECHNOLOGY<br />UNIVERSITY</h2>
-        <h3 style={styles.subtitle}>NON-ACADEMIC SCHOLAR<br />APPLICATION MANAGEMENT SYSTEM</h3>
-        <button onClick={() => navigate('/login')}>login</button>
+        <h1 style={styles.title}>NASAMS</h1>
+        <p style={styles.subtitle}>Non-Academic Scholar Application Management System</p>
+        <button style={styles.loginButton} onClick={() => navigate('/login')}>
+          LOGIN
+        </button>
+        <footer style={styles.footer}>
+          &copy; 2025 Cebu Institute of Technology - University. All rights reserved.
+        </footer>
       </div>
     </div>
   );
 };
 
 const styles = {
-  container: {
+  page: {
+    backgroundColor: '#F5F5DC', // Light beige background
     height: '100vh',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'var(--sanguine-brown)',
+    alignItems: 'center',
   },
   card: {
     backgroundColor: 'white',
-    borderRadius: '20px',
     padding: '2rem 3rem',
+    borderRadius: '12px',
+    boxShadow: '0 5px 15px rgba(0,0,0,0.2)',
     textAlign: 'center',
-    boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+    width: '400px',
+    position: 'relative',
   },
   logo: {
-    width: '90px',
+    width: '120px',
     marginBottom: '1rem',
   },
   title: {
-    color: 'var(--acadia)',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#800000', // Maroon color
     marginBottom: '0.5rem',
-    fontSize: '16px',
-    fontWeight: 'normal',
   },
   subtitle: {
-    color: 'var(--sanguine-brown)',
+    fontSize: '16px',
+    color: '#5D4037',
+    marginBottom: '2rem',
+  },
+  loginButton: {
+    backgroundColor: '#800000',
+    color: 'white',
+    padding: '0.75rem 2rem',
+    border: 'none',
+    borderRadius: '8px',
     fontWeight: 'bold',
     fontSize: '16px',
-    marginBottom: '2rem',
+    cursor: 'pointer',
+    width: '100%',
+    marginBottom: '1.5rem',
+  },
+  footer: {
+    fontSize: '10px',
+    color: '#999999',
+    position: 'absolute',
+    bottom: '10px',
+    left: '50%',
+    transform: 'translateX(-50%)',
   },
 };
 

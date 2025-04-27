@@ -1,12 +1,13 @@
-// pages/Admin/LoginPage.jsx
+// src/pages/Admin/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../../services/authService'; // import the service
+import { loginAdmin } from '../../services/authService'; // Keep your original login service
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -17,12 +18,9 @@ const LoginPage = () => {
       };
 
       const response = await loginAdmin(credentials);
-      console.log(response); // Optional debug
 
-      // Save the token in localStorage
       localStorage.setItem('jwtToken', response.token);
 
-      // Redirect to welcome page
       navigate('/welcome');
     } catch (error) {
       console.error('Login failed:', error);
@@ -31,77 +29,139 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.header}>NASAMS</h2>
-        {error && <p style={styles.error}>{error}</p>}
+        <img src="/school-logo.png" alt="CIT-U Logo" style={styles.logo} />
+        <h1 style={styles.title}>NASAMS</h1>
+        <p style={styles.subtitle}>Non-Academic Scholar Application Management System</p>
+
+        {error && (
+          <div style={styles.errorBox}>
+            {error}
+          </div>
+        )}
+
         <div style={styles.inputGroup}>
-          <label style={styles.label}>Username (Email)</label>
           <input
-            style={styles.input}
             type="text"
+            placeholder="Email"
+            style={styles.input}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
+
         <div style={styles.inputGroup}>
-          <label style={styles.label}>Password</label>
           <input
-            style={styles.input}
             type="password"
+            placeholder="Password"
+            style={styles.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button onClick={handleLogin}>Login</button>
+
+        <div style={styles.checkboxGroup}>
+          <input
+            type="checkbox"
+            id="remember"
+            checked={rememberMe}
+            onChange={() => setRememberMe(!rememberMe)}
+          />
+          <label htmlFor="remember" style={styles.checkboxLabel}>Remember me</label>
+        </div>
+
+        <button style={styles.loginButton} onClick={handleLogin}>
+          LOGIN
+        </button>
+
+        <div style={styles.footer}>
+          &copy; 2025 Cebu Institute of Technology - University
+        </div>
       </div>
     </div>
   );
 };
 
 const styles = {
-  container: {
+  page: {
+    backgroundColor: '#F5F5DC',
     height: '100vh',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'var(--sanguine-brown)',
+    alignItems: 'center',
   },
   card: {
     backgroundColor: 'white',
-    borderRadius: '20px',
     padding: '2rem 3rem',
+    borderRadius: '12px',
+    boxShadow: '0 5px 15px rgba(0,0,0,0.2)',
     textAlign: 'center',
-    boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-    minWidth: '300px'
+    width: '400px',
+    position: 'relative',
   },
-  header: {
-    color: 'var(--sanguine-brown)',
+  logo: {
+    width: '120px',
+    marginBottom: '1rem',
+  },
+  title: {
+    fontSize: '24px',
     fontWeight: 'bold',
-    fontSize: '20px',
+    color: '#800000',
+    marginBottom: '0.5rem',
+  },
+  subtitle: {
+    fontSize: '16px',
+    color: '#5D4037',
     marginBottom: '1.5rem',
   },
   inputGroup: {
     marginBottom: '1rem',
-    textAlign: 'left'
-  },
-  label: {
-    display: 'block',
-    color: 'var(--sanguine-brown)',
-    fontWeight: '600',
-    marginBottom: '0.25rem'
+    textAlign: 'left',
   },
   input: {
     width: '100%',
-    padding: '0.5rem',
+    padding: '0.75rem',
     borderRadius: '8px',
-    border: 'none',
-    backgroundColor: '#f1f1f1'
+    border: '1px solid #ccc',
+    backgroundColor: '#f9f9f9',
+    fontSize: '14px',
   },
-  error: {
-    color: 'red',
-    marginBottom: '1rem'
-  }
+  checkboxGroup: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '1.5rem',
+    marginTop: '-0.5rem',
+  },
+  checkboxLabel: {
+    marginLeft: '0.5rem',
+    fontSize: '14px',
+    color: '#5D4037',
+  },
+  loginButton: {
+    backgroundColor: '#800000',
+    color: 'white',
+    padding: '0.75rem',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    fontSize: '16px',
+    cursor: 'pointer',
+    width: '100%',
+  },
+  errorBox: {
+    backgroundColor: '#ffe6e6',
+    color: '#d32f2f',
+    padding: '0.5rem',
+    marginBottom: '1rem',
+    borderRadius: '8px',
+    fontSize: '14px',
+  },
+  footer: {
+    fontSize: '10px',
+    color: '#999999',
+    marginTop: '2rem',
+  },
 };
 
 export default LoginPage;

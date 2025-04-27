@@ -1,5 +1,4 @@
 // pages/ApplicantProfilePage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit } from 'react-icons/fa';
@@ -44,26 +43,6 @@ const ApplicantProfilePage = () => {
     setApplicants(applicants.map(app =>
       app.id === id ? { ...app, [field]: value } : app
     ));
-  };
-
-  const handleSave = async (id) => {
-    try {
-      const updatedApplicant = applicants.find(app => app.id === id);
-      const token = localStorage.getItem('jwtToken'); // Get JWT token from localStorage
-      await axios.put(`http://localhost:8080/api/admin/users/${id}`, updatedApplicant, {
-        headers: {
-          Authorization: `Bearer ${token}`  // Send JWT token for authentication
-        }
-      });
-
-      // Once the data is successfully saved in the backend, update the state and stop editing
-      setApplicants(applicants.map(app =>
-        app.id === id ? { ...app, isEditing: false } : app
-      ));
-      alert('Changes saved successfully!');
-    } catch (error) {
-      setError(error.message || 'Failed to save changes');
-    }
   };
 
   return (
@@ -126,11 +105,6 @@ const ApplicantProfilePage = () => {
                         <button style={styles.iconBtn} onClick={() => handleEdit(app.id)}>
                           <FaEdit color={app.isEditing ? 'gray' : 'green'} />
                         </button>
-                        {app.isEditing && (
-                          <button style={styles.saveBtn} onClick={() => handleSave(app.id)}>
-                            Save
-                          </button>
-                        )}
                       </div>
                     </td>
                   </tr>
@@ -144,6 +118,7 @@ const ApplicantProfilePage = () => {
   );
 };
 
+// Function to style the status badge
 const getStatusColor = (status) => {
   switch (status) {
     case 'Approved': return { backgroundColor: '#d4edda', color: '#155724' };
@@ -241,16 +216,6 @@ const styles = {
     borderRadius: '6px',
     border: '1px solid #ccc',
     width: '100%',
-  },
-  saveBtn: {
-    backgroundColor: 'var(--sanguine-brown)',
-    color: 'white',
-    border: 'none',
-    padding: '0.6rem 2rem',
-    borderRadius: '20px',
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    cursor: 'pointer',
   },
 };
 

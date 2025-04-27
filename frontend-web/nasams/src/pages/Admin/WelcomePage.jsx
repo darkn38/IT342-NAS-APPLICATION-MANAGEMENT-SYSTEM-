@@ -1,4 +1,4 @@
-// pages/WelcomePage.jsx
+// src/pages/Admin/WelcomePage.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -6,145 +6,219 @@ const WelcomePage = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-    navigate('/login');
+    const confirmLogout = window.confirm('Are you sure you want to logout?');
+    if (confirmLogout) {
+      localStorage.removeItem('jwtToken');
+      navigate('/login');
+    }
   };
-  
 
-  
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
 
   return (
-    <div>
+    <div style={styles.page}>
+      {/* Header */}
       <header style={styles.header}>
-        <div style={styles.userInfo}>
-          <div style={styles.avatar}></div>
-          <div>
-            <div style={styles.name}>Ronan Jake C. Paquera</div>
-            <div style={styles.role}>ADMIN</div>
-          </div>
+        <div style={styles.leftHeader}>
+          <img src="/cit-logo.png" alt="CIT-U Logo" style={styles.logo} />
+          <span style={styles.schoolName}>CIT-U</span>
         </div>
-        <img src="/cit-logo.png" alt="CIT-U Logo" style={styles.logo} />
-        <div>
-          <button onClick={handleLogout} style={styles.logout}>⎋ Logout</button>
+        <div style={styles.rightHeader}>
+          <span style={styles.adminName}>Ronan Jake C. Paquera</span>
+          <div style={styles.avatar}>RP</div>
+          <button onClick={handleLogout} style={styles.logoutBtn}>⎋ Logout</button>
         </div>
       </header>
 
-      <nav style={styles.navbar}>
-        <Link to="/applicants" style={styles.navButton}>Applicant Profile</Link>
-        <Link to="/list" style={styles.navButton}>List of Applicant</Link>
-      </nav>
+      {/* Welcome Banner */}
+      <section style={styles.banner}>
+        <h2 style={styles.bannerTitle}>Welcome back, Ronan Jake C. Paquera</h2>
+        <p style={styles.bannerSubtitle}>Admin • {today}</p>
+      </section>
 
-      <main style={styles.main}>
-        <h2>Welcome to NASAMS Admin Panel</h2>
-        <p>Select a section above to manage applicants.</p>
+      {/* Dashboard Cards */}
+      <section style={styles.cardsContainer}>
+        <div style={styles.card}>
+          <div style={styles.cardIcon}></div>
+          <h3 style={styles.cardNumber}>253</h3>
+          <p style={styles.cardLabel}>Total Applicants</p>
+        </div>
+        <div style={styles.cardGreen}>
+          <div style={styles.cardIcon}></div>
+          <h3 style={styles.cardNumber}>142</h3>
+          <p style={styles.cardLabel}>Approved</p>
+        </div>
+        <div style={styles.cardAmber}>
+          <div style={styles.cardIcon}></div>
+          <h3 style={styles.cardNumber}>78</h3>
+          <p style={styles.cardLabel}>Pending</p>
+        </div>
+        <div style={styles.cardRed}>
+          <div style={styles.cardIcon}></div>
+          <h3 style={styles.cardNumber}>33</h3>
+          <p style={styles.cardLabel}>Rejected</p>
+        </div>
+      </section>
 
-        <section style={styles.analytics}>
-          <h3 style={styles.sectionTitle}>Dashboard Analytics</h3>
-          <div style={styles.cards}>
-            <div style={styles.card}>
-              <h4>Total Applicants</h4>
-              <p>48</p>
-            </div>
-            <div style={styles.card}>
-              <h4>Approved</h4>
-              <p>25</p>
-            </div>
-            <div style={styles.card}>
-              <h4>Pending</h4>
-              <p>15</p>
-            </div>
-            <div style={styles.card}>
-              <h4>Rejected</h4>
-              <p>8</p>
-            </div>
-          </div>
-        </section>
-      </main>
+      {/* Navigation Buttons */}
+      <section style={styles.navButtons}>
+        <Link to="/applicants" style={styles.navBtn}>Applicant Profile</Link>
+        <Link to="/list" style={styles.navBtn}>List of Applicants</Link>
+      </section>
+
+      {/* Optional Recent Activity Timeline */}
+      {/* You can add later if you want */}
     </div>
   );
 };
 
 const styles = {
+  page: {
+    backgroundColor: '#F5F5DC',
+    minHeight: '100vh',
+    paddingBottom: '2rem',
+  },
   header: {
+    backgroundColor: 'white',
+    height: '60px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
-    padding: '1rem 2rem',
-    borderBottom: '2px solid var(--sanguine-brown)'
+    padding: '0 2rem',
+    borderBottom: '1px solid #E0E0E0',
   },
-  userInfo: {
+  leftHeader: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  logo: {
+    height: '40px',
+    marginRight: '1rem',
+  },
+  schoolName: {
+    fontSize: '18px',
+    fontWeight: 'bold',
+    color: '#800000',
+  },
+  rightHeader: {
     display: 'flex',
     alignItems: 'center',
     gap: '1rem',
   },
+  adminName: {
+    fontSize: '14px',
+    color: '#5D4037',
+  },
   avatar: {
-    width: '40px',
-    height: '40px',
+    backgroundColor: '#5D4037',
+    color: 'white',
     borderRadius: '50%',
-    backgroundColor: 'gray',
+    width: '30px',
+    height: '30px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px',
   },
-  name: {
-    fontWeight: 'bold',
-    color: 'var(--sanguine-brown)'
-  },
-  role: {
-    fontSize: '0.8rem',
-    color: 'gray'
-  },
-  logo: {
-    height: '60px',
-  },
-  logout: {
+  logoutBtn: {
     backgroundColor: 'transparent',
-    color: 'var(--acadia)',
-    border: '2px solid var(--acadia)',
-    padding: '0.5rem 1.25rem',
-    borderRadius: '10px',
+    border: '1px solid #800000',
+    color: '#800000',
+    borderRadius: '8px',
+    padding: '0.25rem 1rem',
     fontWeight: 'bold',
     cursor: 'pointer',
-    fontSize: '0.9rem'
   },
-  navbar: {
-    backgroundColor: 'var(--sanguine-brown)',
-    padding: '1rem',
-    display: 'flex',
-    gap: '1rem'
-  },
-  navButton: {
-    backgroundColor: 'white',
-    color: 'var(--sanguine-brown)',
-    padding: '0.5rem 1rem',
-    borderRadius: '20px',
-    fontWeight: 'bold',
-    textDecoration: 'none'
-  },
-  main: {
-    backgroundColor: 'white',
+  banner: {
     margin: '2rem',
-    padding: '2rem',
-    borderRadius: '20px',
-    boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    padding: '1.5rem',
+    boxShadow: '0 5px 10px rgba(0,0,0,0.1)',
   },
-  analytics: {
-    marginTop: '2rem'
+  bannerTitle: {
+    fontSize: '20px',
+    color: '#5D4037',
+    marginBottom: '0.5rem',
   },
-  sectionTitle: {
-    marginBottom: '1rem',
-    color: 'var(--acadia)'
+  bannerSubtitle: {
+    fontSize: '14px',
+    color: '#999999',
   },
-  cards: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '1rem'
+  cardsContainer: {
+    display: 'flex',
+    gap: '1rem',
+    margin: '2rem',
+    flexWrap: 'wrap',
   },
   card: {
-    backgroundColor: 'var(--thatch)',
-    padding: '1rem',
+    flex: '1',
+    backgroundColor: 'white',
     borderRadius: '10px',
-    color: 'white',
+    padding: '1rem',
     textAlign: 'center',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.15)'
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+  },
+  cardGreen: {
+    flex: '1',
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    padding: '1rem',
+    textAlign: 'center',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    borderTop: '4px solid #4CAF50',
+  },
+  cardAmber: {
+    flex: '1',
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    padding: '1rem',
+    textAlign: 'center',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    borderTop: '4px solid #FFC107',
+  },
+  cardRed: {
+    flex: '1',
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    padding: '1rem',
+    textAlign: 'center',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    borderTop: '4px solid #F44336',
+  },
+  cardIcon: {
+    width: '30px',
+    height: '30px',
+    borderRadius: '50%',
+    backgroundColor: '#F5F5DC',
+    margin: '0 auto 0.5rem auto',
+  },
+  cardNumber: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#5D4037',
+  },
+  cardLabel: {
+    fontSize: '14px',
+    color: '#999999',
+  },
+  navButtons: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '2rem',
+    gap: '2rem',
+  },
+  navBtn: {
+    backgroundColor: 'white',
+    color: '#800000',
+    padding: '0.75rem 2rem',
+    borderRadius: '10px',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    boxShadow: '0 5px 10px rgba(0,0,0,0.15)',
+    border: '1px solid #E0E0E0',
   }
 };
 
