@@ -1,7 +1,6 @@
 // pages/ApplicantProfilePage.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 
 const ApplicantProfilePage = () => {
@@ -14,13 +13,13 @@ const ApplicantProfilePage = () => {
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');  // Get the JWT token from localStorage
-        const response = await axios.get('http://localhost:8080/api/admin/users', {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('http://localhost:8080/users', {
           headers: {
-            Authorization: `Bearer ${token}`  // Send JWT token for authentication
+            Authorization: `Bearer ${token}`
           }
         });
-        setApplicants(response.data);  // Set the applicants data to state
+        setApplicants(response.data);
         setLoading(false);
       } catch (error) {
         setError(error.message || 'Failed to load applicants');
@@ -30,20 +29,6 @@ const ApplicantProfilePage = () => {
 
     fetchApplicants();  // Call the function to fetch applicants on component mount
   }, []);
-
-  const handleEdit = (id) => {
-    // Toggle the editing state of a particular applicant
-    setApplicants(applicants.map(app =>
-      app.id === id ? { ...app, isEditing: !app.isEditing } : app
-    ));
-  };
-
-  const handleChange = (id, field, value) => {
-    // Update the value of the field (e.g., status or remarks) when editing
-    setApplicants(applicants.map(app =>
-      app.id === id ? { ...app, [field]: value } : app
-    ));
-  };
 
   return (
     <div style={styles.wrapper}>
@@ -65,7 +50,6 @@ const ApplicantProfilePage = () => {
                   <th style={styles.th}>Applicant Profile</th>
                   <th style={styles.th}>Status</th>
                   <th style={styles.th}>Remarks</th>
-                  <th style={styles.th}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -74,39 +58,9 @@ const ApplicantProfilePage = () => {
                     <td style={styles.td}>{app.firstName} {app.lastName}</td>
                     <td style={styles.td}><Link to={`/applicants/${app.id}`} style={styles.link}>View Profile</Link></td>
                     <td style={styles.td}>
-                      {app.isEditing ? (
-                        <select
-                          value={app.status}
-                          onChange={(e) => handleChange(app.id, 'status', e.target.value)}
-                          style={styles.select}
-                        >
-                          <option value="Pending">Pending</option>
-                          <option value="Approved">Approved</option>
-                          <option value="Rejected">Rejected</option>
-                        </select>
-                      ) : (
-                        <span style={{ ...styles.badge, ...getStatusColor(app.status) }}>{app.status}</span>
-                      )}
+                      <span style={{ ...styles.badge, ...getStatusColor(app.status) }}>{app.status}</span>
                     </td>
-                    <td style={styles.td}>
-                      {app.isEditing ? (
-                        <input
-                          type="text"
-                          value={app.remarks}
-                          onChange={(e) => handleChange(app.id, 'remarks', e.target.value)}
-                          style={styles.input}
-                        />
-                      ) : (
-                        app.remarks
-                      )}
-                    </td>
-                    <td style={styles.td}>
-                      <div style={styles.actionGroup}>
-                        <button style={styles.iconBtn} onClick={() => handleEdit(app.id)}>
-                          <FaEdit color={app.isEditing ? 'gray' : 'green'} />
-                        </button>
-                      </div>
-                    </td>
+                    <td style={styles.td}>{app.remarks}</td>
                   </tr>
                 ))}
               </tbody>
@@ -181,18 +135,6 @@ const styles = {
     verticalAlign: 'middle',
     textAlign: 'center',
   },
-  iconBtn: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '1rem',
-    marginRight: '0.5rem',
-  },
-  actionGroup: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   badge: {
     padding: '0.3rem 0.75rem',
     borderRadius: '20px',
@@ -204,18 +146,6 @@ const styles = {
     color: 'var(--sanguine-brown)',
     fontWeight: 'bold',
     textDecoration: 'none',
-  },
-  input: {
-    padding: '0.4rem',
-    borderRadius: '6px',
-    border: '1px solid #ccc',
-    width: '100%',
-  },
-  select: {
-    padding: '0.4rem',
-    borderRadius: '6px',
-    border: '1px solid #ccc',
-    width: '100%',
   },
 };
 

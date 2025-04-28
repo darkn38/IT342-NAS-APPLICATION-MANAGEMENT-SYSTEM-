@@ -1,4 +1,4 @@
-// pages/ApplicantDetailsPage.jsx
+// src/pages/ApplicantDetailsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -14,24 +14,23 @@ const ApplicantDetailsPage = () => {
     yearLevel: '',
     idNumber: '',
     email: '',
-    address: ''
+    address: '',
+    status: '',
+    remarks: ''
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch applicant details from the backend using the id
   useEffect(() => {
     const fetchApplicant = async () => {
       try {
-        const token = localStorage.getItem('jwtToken'); // Get JWT token from localStorage
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.get(`http://localhost:8080/api/admin/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}` // Send token for authentication
-          }
+          headers: { Authorization: `Bearer ${token}` }
         });
-        setForm(response.data); // Populate form with applicant data
+        setForm(response.data);
         setLoading(false);
       } catch (error) {
         setError(error.message || 'Failed to load applicant');
@@ -39,31 +38,29 @@ const ApplicantDetailsPage = () => {
       }
     };
 
-    fetchApplicant(); // Fetch applicant details on component mount
+    fetchApplicant();
   }, [id]);
-
-  const handleClose = () => {
-    navigate('/applicants'); // Navigate back to the applicants list
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
     try {
-      setIsEditing(false);
       const token = localStorage.getItem('jwtToken');
       await axios.put(`http://localhost:8080/api/admin/users/${id}`, form, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       alert('Changes saved successfully!');
+      setIsEditing(false);
     } catch (error) {
       setError(error.message || 'Failed to save changes');
     }
+  };
+
+  const handleClose = () => {
+    navigate('/applicants');
   };
 
   return (
@@ -82,23 +79,42 @@ const ApplicantDetailsPage = () => {
         ) : error ? (
           <p style={{ color: 'red' }}>{error}</p>
         ) : (
-          <div>
+          <>
             <div style={styles.formGrid}>
               {Object.entries(form).map(([key, value]) => (
-                // Exclude the Id and Password fields from being rendered
-                key !== 'idNumber' && key !== 'password' && (
+                (key !== 'password') && (
                   <div
                     key={key}
                     style={{ ...styles.formGroup, ...(key === 'address' && { gridColumn: 'span 2' }) }}
                   >
                     <label style={styles.label}>{formatLabel(key)}</label>
-                    <input
-                      name={key}
-                      value={value}
-                      onChange={handleChange}
-                      readOnly={!isEditing}
-                      style={styles.input}
-                    />
+                    {key === 'status' && isEditing ? (
+                      <select
+                        name="status"
+                        value={form.status}
+                        onChange={handleChange}
+                        style={styles.select}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                      </select>
+                    ) : key === 'remarks' && isEditing ? (
+                      <textarea
+                        name="remarks"
+                        value={form.remarks}
+                        onChange={handleChange}
+                        style={styles.textarea}
+                      />
+                    ) : (
+                      <input
+                        name={key}
+                        value={value}
+                        onChange={handleChange}
+                        readOnly={!isEditing || (key !== 'remarks' && key !== 'status')}
+                        style={styles.input}
+                      />
+                    )}
                   </div>
                 )
               ))}
@@ -110,10 +126,13 @@ const ApplicantDetailsPage = () => {
             </div>
 
             <div style={styles.actions}>
-              <button style={styles.saveBtn} onClick={handleSave} disabled={!isEditing}>SAVE</button>
-              <button style={styles.editBtn} onClick={() => setIsEditing(true)}>EDIT</button>
+              {isEditing ? (
+                <button style={styles.saveBtn} onClick={handleSave}>Save Changes</button>
+              ) : (
+                <button style={styles.editBtn} onClick={() => setIsEditing(true)}>Edit Profile</button>
+              )}
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
@@ -126,7 +145,7 @@ const formatLabel = (key) =>
 const styles = {
   wrapper: {
     padding: '2rem',
-    backgroundColor: 'var(--sanguine-brown)',
+    backgroundColor: '#F5F5DC',
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
@@ -147,7 +166,7 @@ const styles = {
     marginBottom: '2rem'
   },
   heading: {
-    color: 'var(--acadia)',
+    color: '#5D4037',
     fontSize: '2rem',
     marginBottom: '0.2rem'
   },
@@ -161,7 +180,7 @@ const styles = {
     background: 'none',
     cursor: 'pointer',
     fontWeight: 'bold',
-    color: 'var(--acadia)'
+    color: '#5D4037'
   },
   formGrid: {
     display: 'grid',
@@ -176,7 +195,7 @@ const styles = {
   label: {
     fontWeight: 'bold',
     marginBottom: '0.4rem',
-    color: 'var(--sanguine-brown)'
+    color: '#5D4037'
   },
   input: {
     padding: '0.6rem',
@@ -184,11 +203,24 @@ const styles = {
     border: '1px solid #ccc',
     backgroundColor: '#f3f3f3'
   },
+  select: {
+    padding: '0.6rem',
+    borderRadius: '10px',
+    border: '1px solid #ccc',
+    backgroundColor: '#fff'
+  },
+  textarea: {
+    padding: '0.6rem',
+    borderRadius: '10px',
+    border: '1px solid #ccc',
+    height: '100px',
+    backgroundColor: '#fff'
+  },
   docSection: {
     marginBottom: '2rem'
   },
   subheading: {
-    color: 'var(--acadia)',
+    color: '#5D4037',
     fontSize: '1.2rem',
     marginBottom: '0.8rem'
   },
@@ -209,10 +241,10 @@ const styles = {
     gap: '1rem'
   },
   saveBtn: {
-    backgroundColor: 'var(--sanguine-brown)',
+    backgroundColor: '#4CAF50',
     color: 'white',
     border: 'none',
-    padding: '0.6rem 2rem',
+    padding: '0.8rem 2rem',
     borderRadius: '20px',
     fontWeight: 'bold',
     fontSize: '1rem',
@@ -220,9 +252,9 @@ const styles = {
   },
   editBtn: {
     backgroundColor: 'white',
-    color: 'var(--sanguine-brown)',
-    border: '2px solid var(--sanguine-brown)',
-    padding: '0.6rem 2rem',
+    color: '#4CAF50',
+    border: '2px solid #4CAF50',
+    padding: '0.8rem 2rem',
     borderRadius: '20px',
     fontWeight: 'bold',
     fontSize: '1rem',

@@ -1,10 +1,11 @@
+// src/services/applicantService.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/admin/users';
 
 // ✅ Helper function to get token
 const getAuthHeader = () => ({
-  Authorization: `Bearer ${localStorage.getItem('token')}`
+  Authorization: `Bearer ${localStorage.getItem('jwtToken')}` // <-- fixed here
 });
 
 // ✅ Get all applicants

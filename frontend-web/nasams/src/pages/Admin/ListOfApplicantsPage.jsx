@@ -1,4 +1,3 @@
-// pages/Admin/ListOfApplicantsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaUserPlus } from 'react-icons/fa';
@@ -13,13 +12,14 @@ const ListOfApplicantsPage = () => {
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
-        const token = localStorage.getItem('jwtToken'); // Get the JWT token from local storage
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.get('http://localhost:8080/api/admin/users', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Pass the token for authentication
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-        setApplicants(response.data); // Set applicants in state
+        
+        // Filter out Admin users (Only Applicants will be shown)
+        const filteredApplicants = response.data.filter(user => user.role !== 'ADMIN');
+        setApplicants(filteredApplicants);
         setLoading(false);
       } catch (error) {
         setError(error.message || 'Failed to load applicants');
@@ -27,26 +27,28 @@ const ListOfApplicantsPage = () => {
       }
     };
 
-    fetchApplicants(); // Call the fetchApplicants function on component mount
+    fetchApplicants();
   }, []);
 
   return (
-    <div style={styles.wrapper}>
+    <div style={styles.page}>
       <div style={styles.container}>
-        <div style={styles.headerRow}>
-          <h2 style={styles.heading}>List of Applicants</h2>
-          <button style={styles.closeBtn} onClick={() => navigate('/welcome')}>✕</button>
-        </div>
-        <div style={styles.buttonRow}>
-          <button style={styles.addBtn} onClick={() => navigate('/add')}>
-            <FaUserPlus style={{ marginRight: '8px' }} /> Add Applicant
-          </button>
+        <div style={styles.header}>
+          <h2 style={styles.title}>List of Applicants</h2>
+          <div style={styles.headerActions}>
+            <button style={styles.addBtn} onClick={() => navigate('/add')}>
+              <FaUserPlus style={{ marginRight: '8px' }} /> Add Applicant
+            </button>
+            <button style={styles.closeBtn} onClick={() => navigate('/welcome')}>
+              ✕
+            </button>
+          </div>
         </div>
 
         {loading ? (
-          <p style={styles.loadingText}>Loading applicants...</p>
+          <p style={styles.message}>Loading applicants...</p>
         ) : error ? (
-          <p style={styles.errorText}>{error}</p>
+          <p style={{ ...styles.message, color: 'red' }}>{error}</p>
         ) : (
           <div style={styles.tableWrapper}>
             <table style={styles.table}>
@@ -62,15 +64,15 @@ const ListOfApplicantsPage = () => {
               </thead>
               <tbody>
                 {applicants.map((app) => (
-                  <tr key={app.id} style={styles.tableRow}>
-                    <td style={styles.td}>{app.idNumber}</td>
-                    <td style={styles.td}>{app.firstName} {app.lastName}</td>
-                    <td style={styles.td}>{app.email}</td>
-                    <td style={styles.td}>{app.department}</td>
-                    <td style={styles.td}>{app.address}</td>
+                  <tr key={app.id} style={styles.tr}>
+                    <td style={styles.td}>{app.idNumber || '—'}</td>
+                    <td style={styles.td}>{(app.firstName || '') + ' ' + (app.lastName || '')}</td>
+                    <td style={styles.td}>{app.email || '—'}</td>
+                    <td style={styles.td}>{app.department || '—'}</td>
+                    <td style={styles.td}>{app.address || '—'}</td>
                     <td style={styles.td}>
                       <button style={styles.iconBtn} onClick={() => navigate(`/applicants/${app.id}`)}>
-                        <FaEdit color="green" />
+                        <FaEdit />
                       </button>
                     </td>
                   </tr>
@@ -85,102 +87,106 @@ const ListOfApplicantsPage = () => {
 };
 
 const styles = {
-  wrapper: {
-    padding: '2rem',
-    backgroundColor: 'var(--sanguine-brown)',  // Ensure this matches your design
+  page: {
+    backgroundColor: '#F5F5DC',
     minHeight: '100vh',
+    padding: '2rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
     backgroundColor: 'white',
-    borderRadius: '20px',
+    borderRadius: '16px',
     padding: '2rem',
-    boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
     width: '100%',
     maxWidth: '1200px',
+    boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
   },
-  headerRow: {
+  header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '1rem',
+    marginBottom: '2rem',
   },
-  heading: {
-    color: 'var(--acadia)',  // Use your existing color
+  title: {
     fontSize: '2rem',
     fontWeight: 'bold',
+    color: '#5D4037',
   },
-  closeBtn: {
-    fontSize: '1.5rem',
-    border: 'none',
-    background: 'none',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    color: 'var(--acadia)',
-  },
-  buttonRow: {
+  headerActions: {
     display: 'flex',
-    justifyContent: 'flex-end',
-    marginBottom: '1.5rem',
+    alignItems: 'center',
+    gap: '1rem',
   },
   addBtn: {
-    backgroundColor: 'var(--buff)',
-    color: 'var(--acadia)',
+    backgroundColor: '#800000',
+    color: 'white',
+    padding: '0.6rem 1.2rem',
     border: 'none',
-    padding: '0.6rem 1.5rem',
-    borderRadius: '20px',
+    borderRadius: '8px',
     fontWeight: 'bold',
     display: 'flex',
     alignItems: 'center',
-    boxShadow: '0 3px 6px rgba(0,0,0,0.2)',
-    transition: 'background-color 0.3s ease',
+    cursor: 'pointer',
+    fontSize: '14px',
+  },
+  closeBtn: {
+    backgroundColor: '#FFEBEE',
+    color: '#D32F2F',
+    border: 'none',
+    borderRadius: '50%',
+    width: '36px',
+    height: '36px',
+    fontWeight: 'bold',
+    fontSize: '18px',
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   tableWrapper: {
     overflowX: 'auto',
-    marginTop: '2rem',
   },
   table: {
     width: '100%',
     borderCollapse: 'collapse',
-    borderRadius: '10px',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    overflow: 'hidden',
   },
   th: {
-    backgroundColor: 'var(--sanguine-brown)',
+    backgroundColor: '#800000',
     color: 'white',
     padding: '1rem',
+    fontSize: '14px',
     textAlign: 'left',
-    fontWeight: 'bold',
+  },
+  tr: {
+    borderBottom: '1px solid #f0f0f0',
+    transition: 'background-color 0.3s ease',
   },
   td: {
     padding: '1rem',
-    verticalAlign: 'middle',
-    textAlign: 'left',
-    borderBottom: '1px solid #ddd',
-  },
-  tableRow: {
-    transition: 'background-color 0.3s ease',
+    fontSize: '14px',
+    color: '#5D4037',
   },
   iconBtn: {
-    background: 'none',
+    backgroundColor: '#E0F2F1',
     border: 'none',
+    padding: '0.4rem',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '1.2rem',
-    padding: '0.5rem',
-    borderRadius: '5px',
+    fontSize: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     transition: 'background-color 0.3s ease',
   },
-  loadingText: {
-    fontSize: '1.2rem',
-    color: 'gray',
+  message: {
+    fontSize: '16px',
     textAlign: 'center',
-  },
-  errorText: {
-    fontSize: '1.2rem',
-    color: 'red',
-    textAlign: 'center',
+    marginTop: '2rem',
   },
 };
 

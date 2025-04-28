@@ -1,13 +1,40 @@
 // src/pages/Admin/WelcomePage.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const WelcomePage = () => {
   const navigate = useNavigate();
+  const [totalApplicants, setTotalApplicants] = useState(0);
+  const [approvedApplicants, setApprovedApplicants] = useState(0);
+  const [pendingApplicants, setPendingApplicants] = useState(0);
+  const [rejectedApplicants, setRejectedApplicants] = useState(0);
+
+  useEffect(() => {
+    const fetchApplicants = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('http://localhost:8080/api/admin/users', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const applicants = response.data.filter(user => user.role !== 'ADMIN');
+
+        setTotalApplicants(applicants.length);
+        setApprovedApplicants(applicants.filter(user => user.status === 'Approved').length);
+        setPendingApplicants(applicants.filter(user => user.status === 'Pending').length);
+        setRejectedApplicants(applicants.filter(user => user.status === 'Rejected').length);
+      } catch (error) {
+        console.error('Failed to fetch applicants:', error);
+      }
+    };
+
+    fetchApplicants();
+  }, []);
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm('Are you sure you want to logout?');
-    if (confirmLogout) {
+    if (window.confirm('Are you sure you want to logout?')) {
       localStorage.removeItem('jwtToken');
       navigate('/login');
     }
@@ -42,22 +69,22 @@ const WelcomePage = () => {
       <section style={styles.cardsContainer}>
         <div style={styles.card}>
           <div style={styles.cardIcon}></div>
-          <h3 style={styles.cardNumber}>253</h3>
+          <h3 style={styles.cardNumber}>{totalApplicants}</h3>
           <p style={styles.cardLabel}>Total Applicants</p>
         </div>
         <div style={styles.cardGreen}>
           <div style={styles.cardIcon}></div>
-          <h3 style={styles.cardNumber}>142</h3>
+          <h3 style={styles.cardNumber}>{approvedApplicants}</h3>
           <p style={styles.cardLabel}>Approved</p>
         </div>
         <div style={styles.cardAmber}>
           <div style={styles.cardIcon}></div>
-          <h3 style={styles.cardNumber}>78</h3>
+          <h3 style={styles.cardNumber}>{pendingApplicants}</h3>
           <p style={styles.cardLabel}>Pending</p>
         </div>
         <div style={styles.cardRed}>
           <div style={styles.cardIcon}></div>
-          <h3 style={styles.cardNumber}>33</h3>
+          <h3 style={styles.cardNumber}>{rejectedApplicants}</h3>
           <p style={styles.cardLabel}>Rejected</p>
         </div>
       </section>
@@ -67,9 +94,6 @@ const WelcomePage = () => {
         <Link to="/applicants" style={styles.navBtn}>Applicant Profile</Link>
         <Link to="/list" style={styles.navBtn}>List of Applicants</Link>
       </section>
-
-      {/* Optional Recent Activity Timeline */}
-      {/* You can add later if you want */}
     </div>
   );
 };
