@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import bcrypt from 'bcryptjs'; // Import bcrypt for hashing
+
 
 const AddApplicantPage = () => {
   const navigate = useNavigate();
@@ -30,8 +32,14 @@ const AddApplicantPage = () => {
     setError('');
 
     try {
+      // Hash the password before sending it to the backend
+      const hashedPassword = bcrypt.hashSync(form.password, 10);  // Hash the password
+
+      // Replace the password with the hashed one
+      const formData = { ...form, password: hashedPassword };
+
       const token = localStorage.getItem('jwtToken');
-      const response = await axios.post('http://localhost:8080/api/admin/users', form, {
+      const response = await axios.post('http://localhost:8080/api/admin/users', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -48,7 +56,6 @@ const AddApplicantPage = () => {
       setLoading(false);
     }
   };
-
   return (
     <div style={styles.page}>
       <div style={styles.card}>
