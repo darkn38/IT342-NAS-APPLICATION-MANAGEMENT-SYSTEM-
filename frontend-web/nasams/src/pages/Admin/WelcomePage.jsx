@@ -14,7 +14,7 @@ const WelcomePage = () => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('http://localhost:8080/api/admin/users', {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
