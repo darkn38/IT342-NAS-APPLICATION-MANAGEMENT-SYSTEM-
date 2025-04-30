@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const WelcomePage = () => {
   const navigate = useNavigate();
   const [totalApplicants, setTotalApplicants] = useState(0);
@@ -14,7 +15,7 @@ const WelcomePage = () => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users`, {
+        const response = await axios.get(`${BASE_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

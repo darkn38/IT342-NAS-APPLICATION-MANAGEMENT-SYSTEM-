@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ApplicantProfilePage = () => {
   const navigate = useNavigate();
   const [applicants, setApplicants] = useState([]);
@@ -14,7 +15,7 @@ const ApplicantProfilePage = () => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('http://localhost:8080/users', {
+        const response = await axios.get('${BASE_URL}/users', {
           headers: {
             Authorization: `Bearer ${token}`
           }

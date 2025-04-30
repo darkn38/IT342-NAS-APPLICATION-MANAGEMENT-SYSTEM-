@@ -1,7 +1,10 @@
 // src/services/applicantService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/admin/users';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${BASE_URL}/api/admin/users`;
+
 
 // ✅ Helper function to get token
 const getAuthHeader = () => ({

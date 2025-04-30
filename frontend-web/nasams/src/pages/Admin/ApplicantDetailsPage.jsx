@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ApplicantDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const ApplicantDetailsPage = () => {
     const fetchApplicant = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get(`http://localhost:8080/api/admin/users/${id}`, {
+        const response = await axios.get(`${BASE_URL}/api/admin/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setForm(response.data);
@@ -49,7 +50,7 @@ const ApplicantDetailsPage = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
-      await axios.put(`http://localhost:8080/api/admin/users/${id}`, form, {
+      await axios.put(`${BASE_URL}/api/admin/users/${id}`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Changes saved successfully!');
