@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ApplicantProfilePage = () => {
   const navigate = useNavigate();
   const [applicants, setApplicants] = useState([]);
@@ -15,7 +16,7 @@ const ApplicantProfilePage = () => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('${BASE_URL}/users', {
+        const response = await axios.get(`${BASE_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -57,9 +58,13 @@ const ApplicantProfilePage = () => {
                 {applicants.map(app => (
                   <tr key={app.id} style={styles.tr}>
                     <td style={styles.td}>{app.firstName} {app.lastName}</td>
-                    <td style={styles.td}><Link to={`/applicants/${app.id}`} style={styles.link}>View Profile</Link></td>
                     <td style={styles.td}>
-                      <span style={{ ...styles.badge, ...getStatusColor(app.status) }}>{app.status}</span>
+                      <Link to={`/applicants/${app.id}`} style={styles.link}>View Profile</Link>
+                    </td>
+                    <td style={styles.td}>
+                      <span style={{ ...styles.badge, ...getStatusColor(app.status) }}>
+                        {app.status}
+                      </span>
                     </td>
                     <td style={styles.td}>{app.remarks}</td>
                   </tr>
@@ -86,7 +91,7 @@ const getStatusColor = (status) => {
 const styles = {
   wrapper: {
     padding: '2rem',
-    backgroundColor: 'var(--sanguine-brown)', // Design color
+    backgroundColor: 'var(--sanguine-brown)',
     minHeight: '100vh',
   },
   container: {

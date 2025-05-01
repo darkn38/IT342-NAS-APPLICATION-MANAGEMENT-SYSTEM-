@@ -39,13 +39,13 @@ const AddApplicantPage = () => {
       const formData = { ...form, password: hashedPassword };
 
       const token = localStorage.getItem('jwtToken');
-      const response = await axios.post('${BASE_URL}/api/admin/users', formData, {
+      const response = await axios.post(`${BASE_URL}/api/admin/users`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.status === 200) {
+      if (response.status >= 200 && response.status < 300)        {
         alert('Applicant added successfully!');
         navigate('/list');
       }
