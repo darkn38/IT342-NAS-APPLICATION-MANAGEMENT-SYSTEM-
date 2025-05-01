@@ -1,14 +1,15 @@
 // src/services/applicantService.js
 import axios from 'axios';
 
+// ✅ Use fallback if env fails
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://nasams-production.up.railway.app';
+console.log('🔥 BASE_URL:', BASE_URL);  // DevTools log to confirm which URL is used
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${BASE_URL}/api/admin/users`;
 
-
-// ✅ Helper function to get token
+// ✅ Get auth header with JWT token
 const getAuthHeader = () => ({
-  Authorization: `Bearer ${localStorage.getItem('jwtToken')}` // <-- fixed here
+  Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
 });
 
 // ✅ Get all applicants
