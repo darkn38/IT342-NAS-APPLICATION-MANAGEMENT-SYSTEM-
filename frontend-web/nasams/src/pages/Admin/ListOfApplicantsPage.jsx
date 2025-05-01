@@ -14,9 +14,9 @@ const ListOfApplicantsPage = () => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('${BASE_URL}/api/admin/users', {
+        const response = await axios.get(`${BASE_URL}/api/admin/users`, {
           headers: { Authorization: `Bearer ${token}` },
-        });
+        });        
         
         // Filter out Admin users (Only Applicants will be shown)
         const filteredApplicants = response.data.filter(user => user.role !== 'ADMIN');
