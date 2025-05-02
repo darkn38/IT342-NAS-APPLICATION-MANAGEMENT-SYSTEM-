@@ -1,6 +1,5 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 
 // Admin Pages
 import LandingPage from './pages/Admin/LandingPage';
@@ -11,16 +10,10 @@ import ApplicantDetailsPage from './pages/Admin/ApplicantDetailsPage';
 import ListOfApplicantsPage from './pages/Admin/ListOfApplicantsPage';
 import AddApplicantPage from './pages/Admin/AddApplicantPage';
 
+// Protected Route Wrapper
+import ProtectedRoute from './routes/ProtectedRoute';
+
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
   return (
     <Router>
       <Routes>
@@ -29,15 +22,26 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         {/* Protected Routes */}
-        {isAuthenticated && (
-          <>
-            <Route path="/welcome" element={<WelcomePage />} />
-            <Route path="/applicants" element={<ApplicantProfilePage />} />
-            <Route path="/applicants/:id" element={<ApplicantDetailsPage />} />
-            <Route path="/list" element={<ListOfApplicantsPage />} />
-            <Route path="/add" element={<AddApplicantPage />} />
-          </>
-        )}
+        <Route
+          path="/welcome"
+          element={<ProtectedRoute element={<WelcomePage />} />}
+        />
+        <Route
+          path="/applicants"
+          element={<ProtectedRoute element={<ApplicantProfilePage />} />}
+        />
+        <Route
+          path="/applicants/:id"
+          element={<ProtectedRoute element={<ApplicantDetailsPage />} />}
+        />
+        <Route
+          path="/list"
+          element={<ProtectedRoute element={<ListOfApplicantsPage />} />}
+        />
+        <Route
+          path="/add"
+          element={<ProtectedRoute element={<AddApplicantPage />} />}
+        />
       </Routes>
     </Router>
   );

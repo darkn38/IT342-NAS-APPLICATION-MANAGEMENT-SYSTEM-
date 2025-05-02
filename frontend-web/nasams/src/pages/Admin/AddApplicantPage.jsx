@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import bcrypt from 'bcryptjs'; // Import bcrypt for hashing
 
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const AddApplicantPage = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -39,13 +39,13 @@ const AddApplicantPage = () => {
       const formData = { ...form, password: hashedPassword };
 
       const token = localStorage.getItem('jwtToken');
-      const response = await axios.post('http://localhost:8080/api/admin/users', formData, {
+      const response = await axios.post(`${BASE_URL}/api/admin/users`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (response.status === 200) {
+      if (response.status >= 200 && response.status < 300)        {
         alert('Applicant added successfully!');
         navigate('/list');
       }
