@@ -31,16 +31,17 @@ const ApplicantDetailsPage = () => {
         const response = await axios.get(`${BASE_URL}/api/admin/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setForm(response.data);
+        setForm(response.data || {});
         setLoading(false);
       } catch (error) {
         setError(error.message || 'Failed to load applicant');
         setLoading(false);
       }
     };
-
+  
     fetchApplicant();
   }, [id]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
