@@ -10,10 +10,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/admins")
-@CrossOrigin(origins = {
-        "http://localhost:3000",
-        "https://it-342-nas-application-management-system-84f5.vercel.app"
-})
+@CrossOrigin(origins = "*")
+
 public class AdminController {
 
     @Autowired
