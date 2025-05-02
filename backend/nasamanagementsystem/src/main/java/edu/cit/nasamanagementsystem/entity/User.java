@@ -1,3 +1,4 @@
+
 package edu.cit.nasamanagementsystem.entity;
 
 import edu.cit.nasamanagementsystem.enums.ApplicationStatus;
