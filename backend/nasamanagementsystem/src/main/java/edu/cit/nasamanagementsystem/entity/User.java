@@ -1,6 +1,14 @@
 package edu.cit.nasamanagementsystem.entity;
 
-import jakarta.persistence.*;
+import edu.cit.nasamanagementsystem.enums.ApplicationStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +27,7 @@ public class User {
     @Column(nullable = false)
     private String role; // ADMIN or APPLICANT
 
+    // Applicant fields
     @Column(nullable = false)
     private String firstName;
 
@@ -26,7 +35,7 @@ public class User {
     private String lastName;
 
     @Column(nullable = false, unique = true)
-    private String idNumber; // Student ID number
+    private String idNumber;    // Student ID
 
     @Column(nullable = false)
     private String department;
@@ -37,18 +46,25 @@ public class User {
     @Column(nullable = false)
     private String address;
 
+    // Just storing the filename for now
     @Column(nullable = false)
-    private String status = "Pending"; // Default when created: "Pending"
+    private String documentPath = "no-document.txt";
+
+    // Workflow status
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     @Column(length = 500)
-    private String remarks; // Optional remarks field
+    private String remarks;
 
-    // Constructors
     public User() {}
 
-    public User(String email, String password, String role, String firstName, String lastName,
-                String idNumber, String department, String yearLevel, String address,
-                String status, String remarks) {
+    public User(String email, String password, String role,
+                String firstName, String lastName,
+                String idNumber, String department, String yearLevel,
+                String address, String documentPath,
+                ApplicationStatus status, String remarks) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -58,11 +74,13 @@ public class User {
         this.department = department;
         this.yearLevel = yearLevel;
         this.address = address;
+        this.documentPath = documentPath;
         this.status = status;
         this.remarks = remarks;
     }
 
-    // Getters and Setters
+    // === Getters & Setters ===
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -93,13 +111,15 @@ public class User {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getDocumentPath() { return documentPath; }
+    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
+
+    public ApplicationStatus getStatus() { return status; }
+    public void setStatus(ApplicationStatus status) { this.status = status; }
 
     public String getRemarks() { return remarks; }
     public void setRemarks(String remarks) { this.remarks = remarks; }
 
-    // toString
     @Override
     public String toString() {
         return "User{" +
@@ -112,7 +132,8 @@ public class User {
                 ", department='" + department + '\'' +
                 ", yearLevel='" + yearLevel + '\'' +
                 ", address='" + address + '\'' +
-                ", status='" + status + '\'' +
+                ", documentPath='" + documentPath + '\'' +
+                ", status=" + status +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }
