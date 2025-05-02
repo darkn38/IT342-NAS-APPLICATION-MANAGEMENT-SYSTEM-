@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {
-        "http://localhost:3000",
-        "https://it-342-nas-application-management-system-84f5.vercel.app"
-})
+@CrossOrigin(origins = "*")
+
 @RequestMapping("/api/auth")
 public class AuthController {
 
