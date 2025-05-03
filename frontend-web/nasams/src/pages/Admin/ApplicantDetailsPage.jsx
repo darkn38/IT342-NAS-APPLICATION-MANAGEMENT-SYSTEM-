@@ -60,7 +60,7 @@ const ApplicantDetailsPage = () => {
       setError(error.message || 'Failed to save changes');
     }
   };
-
+  
   const handleClose = () => {
     navigate('/applicants');
   };
@@ -113,7 +113,7 @@ const ApplicantDetailsPage = () => {
                         name={key}
                         value={value}
                         onChange={handleChange}
-                        readOnly={!isEditing || (key !== 'remarks' && key !== 'status')}
+                        readOnly={!isEditing} // ✅ Now this applies to ALL fields
                         style={styles.input}
                       />
                     )}
