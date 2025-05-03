@@ -8,5 +8,6 @@ public class NasamanagementsystemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NasamanagementsystemApplication.class, args);
+        //ad
     }
 }
