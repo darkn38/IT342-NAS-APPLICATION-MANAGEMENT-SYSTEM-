@@ -26,16 +26,21 @@ public class JwtFilter extends OncePerRequestFilter {
     private CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String requestPath = request.getServletPath();
+        // Use full URI to match auth endpoints
+        String path = request.getRequestURI();
 
-        if (requestPath.equals("/api/auth/login") || requestPath.equals("/api/auth/register")|| requestPath.equals("/api/users/register")) {
+        // Allow anonymous access to all /api/auth/* endpoints (login, register, etc.)
+        if (path.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
-    }
+        }
 
+        // Extract JWT from Authorization header
         final String authHeader = request.getHeader("Authorization");
         String username = null;
         String token = null;
@@ -45,6 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
             username = jwtUtil.extractUsername(token);
         }
 
+        // Validate token and set authentication
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -62,7 +68,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public static String getAuthenticatedUserEmail() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof UserDetails) {
             return ((UserDetails) authentication.getPrincipal()).getUsername();
         }
         return null;
