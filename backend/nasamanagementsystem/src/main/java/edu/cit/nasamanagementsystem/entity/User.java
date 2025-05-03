@@ -1,10 +1,7 @@
 package edu.cit.nasamanagementsystem.entity;
 
-import edu.cit.nasamanagementsystem.enums.ApplicationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +24,6 @@ public class User {
     @Column(nullable = false)
     private String role; // ADMIN or APPLICANT
 
-    // Applicant fields
     @Column(nullable = false)
     private String firstName;
 
@@ -35,7 +31,7 @@ public class User {
     private String lastName;
 
     @Column(nullable = false, unique = true)
-    private String idNumber;    // Student ID
+    private String idNumber; // Student ID number
 
     @Column(nullable = false)
     private String department;
@@ -46,25 +42,22 @@ public class User {
     @Column(nullable = false)
     private String address;
 
-    // Just storing the filename for now
-    @Column(nullable = false)
-    private String documentPath = "no-document.txt";
+    // ← NEW: store uploaded document path/URL
+    @Column(name = "document_path")
+    private String documentPath;
 
-    // Workflow status
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApplicationStatus status = ApplicationStatus.PENDING;
+    private String status = "Pending"; // Default when created: "Pending"
 
     @Column(length = 500)
-    private String remarks;
+    private String remarks; // Optional remarks field
 
+    // Constructors
     public User() {}
 
-    public User(String email, String password, String role,
-                String firstName, String lastName,
-                String idNumber, String department, String yearLevel,
-                String address, String documentPath,
-                ApplicationStatus status, String remarks) {
+    public User(String email, String password, String role, String firstName, String lastName,
+                String idNumber, String department, String yearLevel, String address,
+                String documentPath, String status, String remarks) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -79,8 +72,7 @@ public class User {
         this.remarks = remarks;
     }
 
-    // === Getters & Setters ===
-
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -111,11 +103,16 @@ public class User {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public String getDocumentPath() { return documentPath; }
-    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
+    // ← NEW getter/setter for documentPath
+    public String getDocumentPath() { 
+        return documentPath; 
+    }
+    public void setDocumentPath(String documentPath) { 
+        this.documentPath = documentPath; 
+    }
 
-    public ApplicationStatus getStatus() { return status; }
-    public void setStatus(ApplicationStatus status) { this.status = status; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public String getRemarks() { return remarks; }
     public void setRemarks(String remarks) { this.remarks = remarks; }
@@ -123,18 +120,18 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", idNumber='" + idNumber + '\'' +
-                ", department='" + department + '\'' +
-                ", yearLevel='" + yearLevel + '\'' +
-                ", address='" + address + '\'' +
-                ", documentPath='" + documentPath + '\'' +
-                ", status=" + status +
-                ", remarks='" + remarks + '\'' +
-                '}';
+               "id=" + id +
+               ", email='" + email + '\'' +
+               ", role='" + role + '\'' +
+               ", firstName='" + firstName + '\'' +
+               ", lastName='" + lastName + '\'' +
+               ", idNumber='" + idNumber + '\'' +
+               ", department='" + department + '\'' +
+               ", yearLevel='" + yearLevel + '\'' +
+               ", address='" + address + '\'' +
+               ", documentPath='" + documentPath + '\'' +    // include in toString if desired
+               ", status='" + status + '\'' +
+               ", remarks='" + remarks + '\'' +
+               '}';
     }
 }
