@@ -42,7 +42,7 @@ public class SecurityConfig {
 
                         // ✅ Protected endpoints (JWT required)
                         .requestMatchers("/api/scholarships/**").authenticated()
-                        .requestMatchers("/api/admin/**").authenticated()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         // ✅ Future: add more protected APIs here
 
