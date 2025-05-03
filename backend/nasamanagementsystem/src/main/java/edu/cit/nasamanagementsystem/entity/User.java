@@ -43,12 +43,15 @@ public class User {
     @Column(length = 500)
     private String remarks; // Optional remarks field
 
+    @Column(length = 1000)
+    private String documentPath; // ✅ Added field
+
     // Constructors
     public User() {}
 
     public User(String email, String password, String role, String firstName, String lastName,
                 String idNumber, String department, String yearLevel, String address,
-                String status, String remarks) {
+                String status, String remarks, String documentPath) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -60,6 +63,7 @@ public class User {
         this.address = address;
         this.status = status;
         this.remarks = remarks;
+        this.documentPath = documentPath;
     }
 
     // Getters and Setters
@@ -99,6 +103,9 @@ public class User {
     public String getRemarks() { return remarks; }
     public void setRemarks(String remarks) { this.remarks = remarks; }
 
+    public String getDocumentPath() { return documentPath; } // ✅ Getter
+    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; } // ✅ Setter
+
     // toString
     @Override
     public String toString() {
@@ -114,6 +121,7 @@ public class User {
                 ", address='" + address + '\'' +
                 ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", documentPath='" + documentPath + '\'' +
                 '}';
     }
 }
