@@ -21,6 +21,7 @@ import edu.cit.nasamanagementsystem.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/admin/users")
+@CrossOrigin(origins = "*")
 public class AdminUserController {
 
 
