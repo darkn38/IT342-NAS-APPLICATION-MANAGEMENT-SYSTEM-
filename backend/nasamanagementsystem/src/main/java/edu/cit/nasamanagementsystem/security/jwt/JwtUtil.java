@@ -3,6 +3,7 @@ package edu.cit.nasamanagementsystem.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class JwtUtil {
     private String secretKeyBase64;
 
     private final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24; // 24 hours
-    private final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60; // 1 hour
+    private final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60;       // 1 hour
 
     @PostConstruct
     public void init() {
@@ -60,8 +61,18 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails, Long userId) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("authorities", userDetails.getAuthorities());
+
+        // ✅ Set user role as "ADMIN", "STUDENT", etc. from authorities
+        String role = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority) // e.g. "ROLE_ADMIN"
+                .findFirst()
+                .orElse("ROLE_USER")
+                .replace("ROLE_", ""); // → "ADMIN"
+
+        claims.put("role", role); // ✅ This is needed by JwtFilter
         claims.put("userID", userId);
+
         return createToken(claims, userDetails.getUsername(), ACCESS_TOKEN_VALIDITY);
     }
 
@@ -91,5 +102,10 @@ public class JwtUtil {
         } catch (JwtException e) {
             return false;
         }
+    }
+
+    // ✅ Extracts the "role" claim (e.g., "ADMIN") for JwtFilter
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 }
