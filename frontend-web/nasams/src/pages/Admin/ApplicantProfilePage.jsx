@@ -3,23 +3,27 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ApplicantProfilePage = () => {
   const navigate = useNavigate();
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch applicants from the backend API
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('http://localhost:8080/users', {
+        const response = await axios.get(`${BASE_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        setApplicants(response.data);
+
+        // 🔒 Filter out admin users
+        const filtered = response.data.filter(user => user.role !== 'ADMIN');
+        setApplicants(filtered);
         setLoading(false);
       } catch (error) {
         setError(error.message || 'Failed to load applicants');
@@ -27,7 +31,7 @@ const ApplicantProfilePage = () => {
       }
     };
 
-    fetchApplicants();  // Call the function to fetch applicants on component mount
+    fetchApplicants();
   }, []);
 
   return (
@@ -56,9 +60,13 @@ const ApplicantProfilePage = () => {
                 {applicants.map(app => (
                   <tr key={app.id} style={styles.tr}>
                     <td style={styles.td}>{app.firstName} {app.lastName}</td>
-                    <td style={styles.td}><Link to={`/applicants/${app.id}`} style={styles.link}>View Profile</Link></td>
                     <td style={styles.td}>
-                      <span style={{ ...styles.badge, ...getStatusColor(app.status) }}>{app.status}</span>
+                      <Link to={`/applicants/${app.id}`} style={styles.link}>View Profile</Link>
+                    </td>
+                    <td style={styles.td}>
+                      <span style={{ ...styles.badge, ...getStatusColor(app.status) }}>
+                        {app.status}
+                      </span>
                     </td>
                     <td style={styles.td}>{app.remarks}</td>
                   </tr>
@@ -72,7 +80,6 @@ const ApplicantProfilePage = () => {
   );
 };
 
-// Function to style the status badge
 const getStatusColor = (status) => {
   switch (status) {
     case 'Approved': return { backgroundColor: '#d4edda', color: '#155724' };
@@ -85,7 +92,7 @@ const getStatusColor = (status) => {
 const styles = {
   wrapper: {
     padding: '2rem',
-    backgroundColor: 'var(--sanguine-brown)', // Design color
+    backgroundColor: 'var(--sanguine-brown)',
     minHeight: '100vh',
   },
   container: {

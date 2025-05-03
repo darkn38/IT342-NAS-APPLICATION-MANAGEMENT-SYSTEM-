@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaUserPlus } from 'react-icons/fa';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ListOfApplicantsPage = () => {
   const navigate = useNavigate();
   const [applicants, setApplicants] = useState([]);
@@ -13,9 +14,9 @@ const ListOfApplicantsPage = () => {
     const fetchApplicants = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('http://localhost:8080/api/admin/users', {
+        const response = await axios.get(`${BASE_URL}/api/admin/users`, {
           headers: { Authorization: `Bearer ${token}` },
-        });
+        });        
         
         // Filter out Admin users (Only Applicants will be shown)
         const filteredApplicants = response.data.filter(user => user.role !== 'ADMIN');
