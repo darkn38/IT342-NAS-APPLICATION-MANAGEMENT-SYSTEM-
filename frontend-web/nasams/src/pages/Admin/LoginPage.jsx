@@ -1,13 +1,11 @@
-// src/pages/Admin/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../../services/authService'; // Keep your original login service
+import { loginAdmin } from '../../services/authService'; // Make sure the loginAdmin function is correctly defined
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -16,11 +14,16 @@ const LoginPage = () => {
         email: username,
         password: password
       };
-
+   
       const response = await loginAdmin(credentials);
-
+   
+      // ✅ Check if the user is really an admin
+      if (response.role !== 'ADMIN') {
+        setError('Access denied. Only Admins can log in.');
+        return;
+      }
+   
       localStorage.setItem('jwtToken', response.token);
-
       navigate('/welcome');
     } catch (error) {
       console.error('Login failed:', error);
@@ -59,16 +62,6 @@ const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
-
-        <div style={styles.checkboxGroup}>
-          <input
-            type="checkbox"
-            id="remember"
-            checked={rememberMe}
-            onChange={() => setRememberMe(!rememberMe)}
-          />
-          <label htmlFor="remember" style={styles.checkboxLabel}>Remember me</label>
         </div>
 
         <button style={styles.loginButton} onClick={handleLogin}>
@@ -126,17 +119,6 @@ const styles = {
     border: '1px solid #ccc',
     backgroundColor: '#f9f9f9',
     fontSize: '14px',
-  },
-  checkboxGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '1.5rem',
-    marginTop: '-0.5rem',
-  },
-  checkboxLabel: {
-    marginLeft: '0.5rem',
-    fontSize: '14px',
-    color: '#5D4037',
   },
   loginButton: {
     backgroundColor: '#800000',

@@ -11,7 +11,6 @@ const ApplicantProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch applicants from the backend API
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
@@ -21,7 +20,10 @@ const ApplicantProfilePage = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        setApplicants(response.data);
+
+        // 🔒 Filter out admin users
+        const filtered = response.data.filter(user => user.role !== 'ADMIN');
+        setApplicants(filtered);
         setLoading(false);
       } catch (error) {
         setError(error.message || 'Failed to load applicants');
@@ -29,7 +31,7 @@ const ApplicantProfilePage = () => {
       }
     };
 
-    fetchApplicants();  // Call the function to fetch applicants on component mount
+    fetchApplicants();
   }, []);
 
   return (
@@ -78,7 +80,6 @@ const ApplicantProfilePage = () => {
   );
 };
 
-// Function to style the status badge
 const getStatusColor = (status) => {
   switch (status) {
     case 'Approved': return { backgroundColor: '#d4edda', color: '#155724' };
